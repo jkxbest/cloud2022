@@ -1,0 +1,41 @@
+server:
+  port: 3344
+
+spring:
+  application:
+    name: cloud-config-center #注册进Eureka服务器的微服务名
+  ##rabbitmq相关配置,暴露bus刷新配置的端点 15672是web管理界面的端口，5672是mq访问的端口  如果rbmq不在本机，放在spring下
+  rabbitmq:
+    host: centos
+    port: 5672
+    username: admin
+    password: 123
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://gitee.com/jkxfirst/springcloud-config.git #GitHub上面的git仓库名字
+          search-paths: #搜索目录
+            - springcloud-config
+#          私有仓库需要账号密码
+          username: 766135855@qq.com
+          password: myworld5201314
+      label: master #读取分支
+      #启动成功后访问的路径 http://ip:3344/{label}/{application}-{profile}.yml 能访问的配置文件 就表示成功了
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:7001/eureka
+  instance:
+    prefer-ip-address: true
+    instance-id: cloud-config-center3344
+    hostname: cloud-config-center-service
+
+##rabbitmq相关配置,暴露bus刷新配置的端点 SpringCloud Bus动态刷新全局广播
+#  curl -X POST "http://localhost:3344/actuator/bus-refresh 通知所有订阅用户更新
+#  curl -X POST "http://localhost:3344/actuator/bus-refresh/cloud-config-client:3355 定点通知某个订阅用户 name + port
+management:
+  endpoints: #暴露bus刷新配置的端点
+    web:
+      exposure:
+        include: 'bus-refresh'

@@ -1,0 +1,17 @@
+server:
+  port: 80
+
+spring:
+  application:
+    name: cloud-order-feign-hystrix-service
+eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: order-feign-hystrix80
+  client:
+    register-with-eureka: false
+    service-url:
+      defaultZone: http://eureka7001:7001/eureka/
+feign:
+  hystrix:
+    enabled: true
